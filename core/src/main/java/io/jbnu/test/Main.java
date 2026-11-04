@@ -3,10 +3,12 @@ package io.jbnu.test;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -18,6 +20,7 @@ public class Main extends ApplicationAdapter {
     private Texture playerTexture;
     private Texture blockTexture;
     private Texture spikeTexture;
+    private Texture sawTexture;
     private Texture flagTexture;
 
     private Texture hardPauseTexture;
@@ -31,6 +34,8 @@ public class Main extends ApplicationAdapter {
     private OrthographicCamera staticCamera;
     private Viewport viewport;
 
+    private ShapeRenderer shapeRenderer;
+
 
     @Override
     public void create() {
@@ -39,10 +44,11 @@ public class Main extends ApplicationAdapter {
         blockTexture = new Texture("block.png");
         spikeTexture = new Texture("spike.png");
         jumpPadTexture = new Texture("jump_pad.png");
+        sawTexture = new Texture("saw.png");
         flagTexture = new Texture("flag.png");
 
         world = new GameWorld(playerTexture, blockTexture, spikeTexture,
-            jumpPadTexture, flagTexture);
+            jumpPadTexture, sawTexture, flagTexture);
 
         hardPauseTexture = new Texture("hard_pause.png");
         softPauseTexture = new Texture("soft_pause.png");
@@ -58,6 +64,7 @@ public class Main extends ApplicationAdapter {
         staticCamera = new OrthographicCamera();
         staticCamera.setToOrtho(false, 1280, 720);
 
+        shapeRenderer = new ShapeRenderer();
     }
 
     @Override
@@ -79,12 +86,15 @@ public class Main extends ApplicationAdapter {
         playerTexture.dispose();
         blockTexture.dispose();
         spikeTexture.dispose();
+        sawTexture.dispose();
         flagTexture.dispose();
 
         hardPauseTexture.dispose();
         softPauseTexture.dispose();
         jumpPadTexture.dispose();
         clearFont.dispose();
+
+        shapeRenderer.dispose();
     }
 
     public void input() {
@@ -157,10 +167,23 @@ public class Main extends ApplicationAdapter {
             jumpPad.draw(batch);
         }
 
+        for (Saw saw : world.getSaws()) {
+            saw.draw(batch);
+        }
+
         world.getFlag().draw(batch);
         world.getPlayer().draw(batch);
 
         batch.end();
+
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+
+        for (Saw saw : world.getSaws()) {
+            shapeRenderer.rect(saw.hitbox.x, saw.hitbox.y, saw.hitbox.width, saw.hitbox.height);
+        }
+        shapeRenderer.end();
 
 
         batch.setProjectionMatrix(staticCamera.combined);

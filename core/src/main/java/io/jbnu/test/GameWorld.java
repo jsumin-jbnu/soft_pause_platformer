@@ -25,6 +25,7 @@ public class GameWorld {
     private final Array<Block> blocks;
     private final Array<Spike> spikes;
     private final Array<JumpPad> jumpPads;
+    private final Array<Saw> saws;
 
     private Flag flag;
 
@@ -43,14 +44,17 @@ public class GameWorld {
     private Texture blockTexture;
     private Texture spikeTexture;
     private Texture jumpPadTexture;
+    private Texture sawTexture;
     private Texture flagTexture;
 
 
+
     public GameWorld(Texture playerTexture, Texture blockTexture, Texture spikeTexture,
-                     Texture jumpPadTexture, Texture flagTexture) {
+                     Texture jumpPadTexture, Texture sawTexture, Texture flagTexture) {
         this.blockTexture = blockTexture;
         this.spikeTexture = spikeTexture;
         this.jumpPadTexture = jumpPadTexture;
+        this.sawTexture = sawTexture;
         this.flagTexture = flagTexture;
 
         player = new gameCharacter(playerTexture, 0, 100);
@@ -59,9 +63,10 @@ public class GameWorld {
         blocks = new Array<>();
         spikes = new Array<>();
         jumpPads = new Array<>();
+        saws = new Array<>();
         groundSensor = new Rectangle();
 
-         loadStage(1);
+        loadStage(1);
     }
 
     public gameCharacter getPlayer()
@@ -114,7 +119,7 @@ public class GameWorld {
         // 가시와 충돌 시 리트라이
         for(Spike spike : spikes) {
             if (playerBounds.overlaps(spike.hitbox)) {
-                resetPlayerToSpawn();
+                playerDeath();
                 return;
             }
         }
@@ -127,15 +132,30 @@ public class GameWorld {
             }
         }
 
+        // 톱니와 충돌 시 리트라이
+        for(Saw saw : saws) {
+            if (playerBounds.overlaps(saw.hitbox)) {
+                playerDeath();
+                return;
+            }
+        }
+
+
+
 
         // 플래그와 충돌 시 클리어 처리
         if (playerBounds.overlaps(flag.bounds)) {
             gameState = GameState.STAGE_CLEAR;
         }
 
-        // 소프트 퍼즈
+        // ★ 소프트 퍼즈
         if(softPause) {
             return;
+        }
+
+        // 톱니가 움직이도록 함
+        for(Saw saw : saws) {
+            saw.update(delta);
         }
 
         // 바닥에 블럭이 있는지 판정하는 센서
@@ -166,11 +186,11 @@ public class GameWorld {
             movePlayerY(player.velocity.y * delta);
         }
 
+        // 플레이어가 낭떠러지에 떨어질 시 리스폰
         if(player.position.y < DEATH_Y) {
-            resetPlayerToSpawn();
+            playerDeath();
+            return;
         }
-
-
 
         player.syncSpriteToPosition();
     }
@@ -183,6 +203,7 @@ public class GameWorld {
         blocks.clear();
         spikes.clear();
         jumpPads.clear();
+        saws.clear();
         flag = null;
 
         createLevel();
@@ -196,6 +217,9 @@ public class GameWorld {
 
             spikes.add(new Spike(spikeTexture, 200, 100, 60, 60));
             jumpPads.add(new JumpPad(jumpPadTexture, 400, 100, 60, 30));
+            saws.add(new Saw(sawTexture,  0, 200, 200, 200, 100, 30f));
+            saws.add(new Saw(sawTexture, -400, 200, -300, 100, 200, 50f));
+            saws.add(new Saw(sawTexture, -600, 300, 600, 400, 300, 100f));
 
             flag = new Flag(flagTexture, 1000, 200, 100, 100);
         }
@@ -217,6 +241,7 @@ public class GameWorld {
 
     public Array<Spike> getSpikes() {return spikes;}
     public Array<JumpPad> getJumpPads() {return jumpPads;}
+    public Array<Saw> getSaws() {return saws;}
 
     public Flag getFlag() {return flag;}
 
@@ -235,6 +260,11 @@ public class GameWorld {
         player.isGrounded = true;
         player.syncSpriteToPosition();
     }
+    public void playerDeath() {
+        loadStage(currentStage);
+        resetPlayerToSpawn();
+    }
+
 
     public GameState getGameState() {
         return gameState;
