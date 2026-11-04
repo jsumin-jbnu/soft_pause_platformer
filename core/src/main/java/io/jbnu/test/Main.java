@@ -20,7 +20,8 @@ public class Main extends ApplicationAdapter {
     private Texture spikeTexture;
     private Texture flagTexture;
 
-    private Texture pauseTexture;
+    private Texture hardPauseTexture;
+    private Texture softPauseTexture;
     private BitmapFont clearFont;
 
     // 카메라
@@ -40,7 +41,8 @@ public class Main extends ApplicationAdapter {
 
         world = new GameWorld(playerTexture, blockTexture, spikeTexture, flagTexture);
 
-        pauseTexture = new Texture("pause.png");
+        hardPauseTexture = new Texture("hard_pause.png");
+        softPauseTexture = new Texture("soft_pause.png");
 
         clearFont = new BitmapFont();
         clearFont.getData().setScale(10);
@@ -75,25 +77,20 @@ public class Main extends ApplicationAdapter {
         spikeTexture.dispose();
         flagTexture.dispose();
 
-        pauseTexture.dispose();
+        hardPauseTexture.dispose();
+        softPauseTexture.dispose();
         clearFont.dispose();
     }
 
     public void input() {
-        // ESC로 일시정지 실행 (hardPause 값이 false -> true)
-        if(!world.isHardPause()) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-                world.onHardPause();
-            }
-        }
-        // ESC로 일시정지 해제 (hardPause 값이 true -> false)
-        else {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-                world.offHardPause();
-            }
-            return;
+        // ESC로 일시정지 토글
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                world.toggleHardPause();
         }
 
+        if(world.isHardPause()) {
+            return;
+        }
 
         // GAME_CLEAR시 ENTER로 리스타트
         if(world.getGameState() == GameState.GAME_CLEAR) {
@@ -113,6 +110,17 @@ public class Main extends ApplicationAdapter {
 
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             world.onPlayerLeft(Gdx.graphics.getDeltaTime());
+        }
+
+        // Shift로 소프트 퍼즈 기믹 사용
+         if (Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT)
+             || Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_RIGHT)){
+            world.toggleSoftPause();
+
+        }
+
+        if(world.isSoftPause()) {
+            return;
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -159,12 +167,15 @@ public class Main extends ApplicationAdapter {
 
         if(world.isHardPause()) {
             batch.begin();
-            batch.draw(pauseTexture, 1180, 620, 100, 100);
+            batch.draw(hardPauseTexture, 1160, 600, 120, 120);
             batch.end();
         }
 
-
-
+        if(world.isSoftPause()) {
+            batch.begin();
+            batch.draw(softPauseTexture, 0, 600, 120, 120);
+            batch.end();
+        }
 
     }
 }

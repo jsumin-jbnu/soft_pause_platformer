@@ -30,6 +30,8 @@ public class GameWorld {
 
     // 게임 전체를 멈추는 일시정지 기능 (true일시 하드 퍼즈)
     private boolean hardPause = false;
+    // 중력 등 게임 요소를 멈추는 게임 기믹 (true일시 소프트 퍼즈)
+    private boolean softPause = false;
     private final Rectangle groundSensor;
 
     private int currentStage = 1;
@@ -65,6 +67,7 @@ public class GameWorld {
 
 
     public void update(float delta) {
+        // 하드 퍼즈
         if(hardPause) {
             return;
         }
@@ -76,6 +79,7 @@ public class GameWorld {
             if(clearTimer >= CLEAR_DELAY) {
                 if(currentStage >= FINAL_STAGE) {
                     gameState = GameState.GAME_CLEAR;
+                    softPause = false;
                 }
 
                 else {
@@ -96,6 +100,25 @@ public class GameWorld {
             if(clearTimer != 0f) {
                 clearTimer = 0f;
             }
+            return;
+        }
+
+        Rectangle playerBounds = player.sprite.getBoundingRectangle();
+
+        // 가시와 충돌 시 리트라이
+        for(Spike spike : spikes) {
+            if (playerBounds.overlaps(spike.hitbox)) {
+                resetPlayerToSpawn();
+                return;
+            }
+        }
+        // 플래그와 충돌 시 클리어 처리
+        if (playerBounds.overlaps(flag.bounds)) {
+            gameState = GameState.STAGE_CLEAR;
+        }
+
+        // 소프트 퍼즈
+        if(softPause) {
             return;
         }
 
@@ -131,19 +154,7 @@ public class GameWorld {
             resetPlayerToSpawn();
         }
 
-        Rectangle playerBounds = player.sprite.getBoundingRectangle();
 
-        // 가시와 충돌 시 리트라이
-        for(Spike spike : spikes) {
-            if (playerBounds.overlaps(spike.hitbox)) {
-                resetPlayerToSpawn();
-                return;
-            }
-        }
-        // 플래그와 충돌 시 클리어 처리
-        if (playerBounds.overlaps(flag.bounds)) {
-            gameState = GameState.STAGE_CLEAR;
-        }
 
         player.syncSpriteToPosition();
     }
@@ -200,6 +211,8 @@ public class GameWorld {
     }
 
     public void resetPlayerToSpawn() {
+        softPause = false;
+
         player.position.set(0, 100);
         player.velocity.set(0, 0);
         player.isGrounded = true;
@@ -212,6 +225,10 @@ public class GameWorld {
 
     public boolean isHardPause() {
         return hardPause;
+    }
+
+    public boolean isSoftPause() {
+        return softPause;
     }
 
     // X축 블럭 충돌계산
@@ -312,11 +329,11 @@ public class GameWorld {
         player.jump();
     }
 
-    public void onHardPause() {
-        hardPause = true;
+    public void toggleHardPause() {
+        hardPause = !hardPause;
     }
 
-    public void offHardPause() {
-        hardPause = false;
+    public void toggleSoftPause() {
+        softPause = !softPause;
     }
 }
