@@ -1,6 +1,5 @@
 package io.jbnu.test;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.Rectangle;
@@ -8,10 +7,12 @@ import com.badlogic.gdx.math.Rectangle;
 public class GameWorld {
 
     // 중력 가속도 값
-    public final float WORLD_GRAVITY = -9.8f * 130;
+    public final float WORLD_GRAVITY = -9.8f * 140;
 
     // 플레이어의 X축 이동값
     private final float MOVE_SPEED = 420f;
+     // 점프패드 속도
+    private final float JUMP_PAD_VELOCITY = 900f;
     // 스테이지 클리어 후 딜레이 시간
     private final float CLEAR_DELAY = 2f;
 
@@ -23,6 +24,7 @@ public class GameWorld {
     private final gameCharacter player;
     private final Array<Block> blocks;
     private final Array<Spike> spikes;
+    private final Array<JumpPad> jumpPads;
 
     private Flag flag;
 
@@ -40,12 +42,15 @@ public class GameWorld {
 
     private Texture blockTexture;
     private Texture spikeTexture;
+    private Texture jumpPadTexture;
     private Texture flagTexture;
 
 
-    public GameWorld(Texture playerTexture, Texture blockTexture, Texture spikeTexture, Texture flagTexture) {
+    public GameWorld(Texture playerTexture, Texture blockTexture, Texture spikeTexture,
+                     Texture jumpPadTexture, Texture flagTexture) {
         this.blockTexture = blockTexture;
         this.spikeTexture = spikeTexture;
+        this.jumpPadTexture = jumpPadTexture;
         this.flagTexture = flagTexture;
 
         player = new gameCharacter(playerTexture, 0, 100);
@@ -53,6 +58,7 @@ public class GameWorld {
         // blockTexture를 이용해서 나중에 여러 Block을 서로 다른 위치에 생성
         blocks = new Array<>();
         spikes = new Array<>();
+        jumpPads = new Array<>();
         groundSensor = new Rectangle();
 
          loadStage(1);
@@ -112,6 +118,16 @@ public class GameWorld {
                 return;
             }
         }
+
+        // 점프패드와 충돌 시 슈퍼점프
+        for(JumpPad jumpPad : jumpPads) {
+            if (playerBounds.overlaps(jumpPad.bounds)) {
+                player.velocity.y = JUMP_PAD_VELOCITY;
+                player.isGrounded = false;
+            }
+        }
+
+
         // 플래그와 충돌 시 클리어 처리
         if (playerBounds.overlaps(flag.bounds)) {
             gameState = GameState.STAGE_CLEAR;
@@ -166,6 +182,7 @@ public class GameWorld {
 
         blocks.clear();
         spikes.clear();
+        jumpPads.clear();
         flag = null;
 
         createLevel();
@@ -178,6 +195,7 @@ public class GameWorld {
             blocks.add(new Block(blockTexture, 300, 250, 60, 100));
 
             spikes.add(new Spike(spikeTexture, 200, 100, 60, 60));
+            jumpPads.add(new JumpPad(jumpPadTexture, 400, 100, 60, 30));
 
             flag = new Flag(flagTexture, 1000, 200, 100, 100);
         }
@@ -195,13 +213,12 @@ public class GameWorld {
         }
     }
 
-    public Array<Block> getBlocks() {
-        return blocks;
-    }
+    public Array<Block> getBlocks() {return blocks;}
 
     public Array<Spike> getSpikes() {return spikes;}
+    public Array<JumpPad> getJumpPads() {return jumpPads;}
 
-    public Flag getFlag() { return flag;}
+    public Flag getFlag() {return flag;}
 
     public void restartGame() {
         loadStage(1);

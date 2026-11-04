@@ -22,6 +22,7 @@ public class Main extends ApplicationAdapter {
 
     private Texture hardPauseTexture;
     private Texture softPauseTexture;
+    private Texture jumpPadTexture;
     private BitmapFont clearFont;
 
     // 카메라
@@ -37,12 +38,15 @@ public class Main extends ApplicationAdapter {
         playerTexture = new Texture("char.png");
         blockTexture = new Texture("block.png");
         spikeTexture = new Texture("spike.png");
+        jumpPadTexture = new Texture("jump_pad.png");
         flagTexture = new Texture("flag.png");
 
-        world = new GameWorld(playerTexture, blockTexture, spikeTexture, flagTexture);
+        world = new GameWorld(playerTexture, blockTexture, spikeTexture,
+            jumpPadTexture, flagTexture);
 
         hardPauseTexture = new Texture("hard_pause.png");
         softPauseTexture = new Texture("soft_pause.png");
+
 
         clearFont = new BitmapFont();
         clearFont.getData().setScale(10);
@@ -79,6 +83,7 @@ public class Main extends ApplicationAdapter {
 
         hardPauseTexture.dispose();
         softPauseTexture.dispose();
+        jumpPadTexture.dispose();
         clearFont.dispose();
     }
 
@@ -147,6 +152,11 @@ public class Main extends ApplicationAdapter {
         for (Spike spike : world.getSpikes()) {
             spike.draw(batch);
         }
+
+        for (JumpPad jumpPad : world.getJumpPads()) {
+            jumpPad.draw(batch);
+        }
+
         world.getFlag().draw(batch);
         world.getPlayer().draw(batch);
 
