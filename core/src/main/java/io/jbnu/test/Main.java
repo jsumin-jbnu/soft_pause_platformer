@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -26,7 +27,10 @@ public class Main extends ApplicationAdapter {
     private Texture hardPauseTexture;
     private Texture softPauseTexture;
     private Texture jumpPadTexture;
+    private BitmapFont stageFont;
     private BitmapFont clearFont;
+
+    private GlyphLayout layout;
 
     // 카메라
     private OrthographicCamera camera;
@@ -56,6 +60,12 @@ public class Main extends ApplicationAdapter {
 
         clearFont = new BitmapFont();
         clearFont.getData().setScale(10);
+
+        stageFont = new BitmapFont();
+        stageFont.getData().setScale(2);
+
+        // 가운데 정렬을 위한 GlyphLayout
+        layout = new GlyphLayout();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(1280, 720, camera);
@@ -92,6 +102,7 @@ public class Main extends ApplicationAdapter {
         hardPauseTexture.dispose();
         softPauseTexture.dispose();
         jumpPadTexture.dispose();
+        stageFont.dispose();
         clearFont.dispose();
 
         shapeRenderer.dispose();
@@ -187,6 +198,13 @@ public class Main extends ApplicationAdapter {
 
 
         batch.setProjectionMatrix(staticCamera.combined);
+        batch.begin();
+        String stageText = "Stage " + world.getCurrentStage() + " / " + GameWorld.FINAL_STAGE;
+        layout.setText(stageFont, stageText); // 이번 문장 길이 측정
+        float x = 640 - layout.width / 2; // 가운데 정렬 x값
+        stageFont.draw(batch, stageText, x, 700);
+        batch.end();
+
         if(world.getGameState() == GameState.STAGE_CLEAR) {
             batch.begin();
             clearFont.draw(batch, "STAGE CLEAR !!", 60, 440);
