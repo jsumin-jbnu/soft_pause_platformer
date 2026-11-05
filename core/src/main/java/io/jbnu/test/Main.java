@@ -187,14 +187,20 @@ public class Main extends ApplicationAdapter {
 
         batch.end();
 
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
+        if(world.isDEBUG()) {
+            shapeRenderer.setProjectionMatrix(camera.combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.RED);
 
-        for (Saw saw : world.getSaws()) {
-            shapeRenderer.rect(saw.hitbox.x, saw.hitbox.y, saw.hitbox.width, saw.hitbox.height);
+            for (Spike spike : world.getSpikes()) {
+                shapeRenderer.rect(spike.hitbox.x, spike.hitbox.y, spike.hitbox.width, spike.hitbox.height);
+            }
+
+            for (Saw saw : world.getSaws()) {
+                shapeRenderer.rect(saw.hitbox.x, saw.hitbox.y, saw.hitbox.width, saw.hitbox.height);
+            }
+            shapeRenderer.end();
         }
-        shapeRenderer.end();
 
 
         batch.setProjectionMatrix(staticCamera.combined);

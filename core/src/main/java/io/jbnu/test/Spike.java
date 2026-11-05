@@ -13,14 +13,23 @@ public class Spike {
     public Rectangle hitbox;
 
 
-    public Spike(Texture texture, float x, float y, float width, float height) {
+
+    public Spike(Texture texture, float x, float y, float size, boolean flipped) {
         this.position = new Vector2(x, y);
 
         this.sprite = new Sprite(texture);
         this.sprite.setPosition(x, y);
-        this.sprite.setSize(width, height);
+        this.sprite.setSize(size, size);
 
-        this.hitbox = new Rectangle(x + 10, y + height / 2, width - 20, height/2);
+        float hitX = x + size * 0.2f;
+        float hitY = y + size * 0.2f;
+        float hitW = size * 0.6f;
+        float hitH = size * 0.6f;
+
+        if (flipped) {
+            sprite.flip(false, true);
+        }
+        this.hitbox = new Rectangle(hitX, hitY, hitW, hitH);
     }
 
     public void draw(SpriteBatch batch) {
