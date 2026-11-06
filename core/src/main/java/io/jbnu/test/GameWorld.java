@@ -8,9 +8,9 @@ public class GameWorld {
 
     // 디버그용 설정값
     private final boolean DEBUG = true;
-    private final int DEBUG_STAGE = 4;
-    private final int DEBUG_X = 0;
-    private final int DEBUG_Y = 100;
+    private final int DEBUG_STAGE = 5;
+    private final int DEBUG_X = -300;
+    private final int DEBUG_Y = 600;
 
     public boolean isDEBUG() {
         return DEBUG;
@@ -444,48 +444,67 @@ public class GameWorld {
 
     }
     public void createStage5() {
-        blocks.add(new Block(blockTexture, -100, 0, 200, 100));
-        flag = new Flag(flagTexture, 200, 100, 100, 100);
+        blocks.add(new Block(blockTexture, -250, 0, 1500, 100)); // 지면1_1
+        blocks.add(new Block(blockTexture, -150, 300, 400, 50)); // 천장1_2
+        spikes.add(new Spike(spikeTexture, 250, 100, 100, false)); // 가시1_a1
+        spikes.add(new Spike(spikeTexture, 350, 100, 100, false)); // 가시1_a2
+        spikes.add(new Spike(spikeTexture, 450, 100, 100, false)); // 가시1_a3
+        spikes.add(new Spike(spikeTexture, 550, 100, 100, false)); // 가시1_a4
+        spikes.add(new Spike(spikeTexture, 650, 100, 100, false)); // 가시1_a5
+        spikes.add(new Spike(spikeTexture, 750, 100, 100, false)); // 가시1_a6
+        spikes.add(new Spike(spikeTexture, 850, 100, 100, false)); // 가시1_a7
+        spikes.add(new Spike(spikeTexture, 950, 100, 100, false)); // 가시1_a8
 
-        blocks.add(new Block(blockTexture, 4000, 0, 1500, 100)); // 지면3_1
-        blocks.add(new Block(blockTexture, 4100, 300, 400, 50)); // 천장3_2
-        spikes.add(new Spike(spikeTexture, 4250, 200, 100, true)); // 가시3_b0
-        spikes.add(new Spike(spikeTexture, 4500, 100, 100, false)); // 가시3_a1
-        spikes.add(new Spike(spikeTexture, 4600, 100, 100, false)); // 가시3_a2
-        spikes.add(new Spike(spikeTexture, 4700, 100, 100, false)); // 가시3_a3
-        spikes.add(new Spike(spikeTexture, 4800, 100, 100, false)); // 가시3_a4
-        spikes.add(new Spike(spikeTexture, 4900, 100, 100, false)); // 가시3_a5
-        spikes.add(new Spike(spikeTexture, 5000, 100, 100, false)); // 가시3_a6
-        spikes.add(new Spike(spikeTexture, 5100, 100, 100, false)); // 가시3_a7
-        spikes.add(new Spike(spikeTexture, 5200, 100, 100, false)); // 가시3_a8
+        spikes.add(new Spike(spikeTexture, 1150, 200, 100, true)); // 가시1_b1
+        spikes.add(new Spike(spikeTexture, 1250, 200, 100, true)); // 가시1_b2
+        spikes.add(new Spike(spikeTexture, 1350, 200, 100, true)); // 가시1_b3
+        spikes.add(new Spike(spikeTexture, 1450, 200, 100, true)); // 가시1_b4
+        spikes.add(new Spike(spikeTexture, 1550, 200, 100, true)); // 가시1_b5
+        spikes.add(new Spike(spikeTexture, 1650, 200, 100, true)); // 가시1_b6
+        spikes.add(new Spike(spikeTexture, 1750, 200, 100, true)); // 가시1_b7
+        spikes.add(new Spike(spikeTexture, 1850, 200, 100, true)); // 가시1_b8
+
+        blocks.add(new Block(blockTexture, 250, 300, 1700, 50)); // 지면2_1
+        blocks.add(new Block(blockTexture, -550, 700, 2700, 100)); // 천장2_1
+
+        blocks.add(new Block(blockTexture, 2100, 0, 800, 1000)); // 우측 벽2
+        jumpPads.add(new JumpPad(jumpPadTexture, 2040, 0, 60, 30)); // 점프패드2_1
+        jumpPads.add(new JumpPad(jumpPadTexture, 2040, 200, 60, 30)); // 점프패드2_2
+        jumpPads.add(new JumpPad(jumpPadTexture, 420, 350, 60, 30)); // 점프패드2_3
+
+        saws.add(new Saw(sawTexture, 1550, 300, 1550, 550, 200, 500f)); // 톱니2_1
+        saws.add(new Saw(sawTexture, 1400, 300, 1400, 550, 200, 500f)); // 톱니2_2
+
+        saws.add(new Saw(sawTexture, 1100, 550, 1100, 300, 200, 550f)); // 톱니2_3
+        saws.add(new Saw(sawTexture, 950, 550, 950, 300, 200, 550f)); // 톱니2_4
+
+        saws.add(new Saw(sawTexture, 500, 300, 500, 550, 200, 600f)); // 톱니2_5
+        saws.add(new Saw(sawTexture, 350, 550, 350, 300, 200, 600f)); // 톱니2_6
+        saws.add(new Saw(sawTexture, 200, 300, 200, 550, 200, 600f)); // 톱니2_7
+        blocks.add(new Block(blockTexture, -550, 0, 400, 550)); // 지면2_2
+
+        saws.add(new Saw(sawTexture, -850, -100, -850, 550, 300, 650f)); // 톱니3_1
+        blocks.add(new Block(blockTexture, -1150, 0, 300, 250)); // 지면3_1
+        blocks.add(new Block(blockTexture, -1150, 450, 300, 500)); // 천장3_1
+
+        saws.add(new Saw(sawTexture, -1450, 550, -1450, -100, 300, 700f)); // 톱니3_2
+        blocks.add(new Block(blockTexture, -1750, 0, 300, 350)); // 지면3_2
+        blocks.add(new Block(blockTexture, -1750, 550, 300, 400)); // 천장3_2
+
+        saws.add(new Saw(sawTexture, -2050, -100, -2050, 550, 300, 750f)); // 톱니3_3
+        blocks.add(new Block(blockTexture, -2350, 0, 300, 100)); // 지면3_3
+        blocks.add(new Block(blockTexture, -2350, 300, 300, 600)); // 천장3_3
+        jumpPads.add(new JumpPad(jumpPadTexture, -2225, 250, 60, 30)); // 점프패드3
+
+        blocks.add(new Block(blockTexture, -2950, 0, 300, 400)); // 지면3_4
+        blocks.add(new Block(blockTexture, -2950, 600, 300, 400)); // 천장3_4
+        saws.add(new Saw(sawTexture, -2650, -100, -2650, 550, 300, 250f)); // 톱니3_4
+
+        blocks.add(new Block(blockTexture, -3850, 0, 900, 900)); // 좌측 벽3
 
 
-        spikes.add(new Spike(spikeTexture, 5400, 200, 100, true)); // 가시3_b1
-        spikes.add(new Spike(spikeTexture, 5500, 200, 100, true)); // 가시3_b2
-        spikes.add(new Spike(spikeTexture, 5600, 200, 100, true)); // 가시3_b3
-        spikes.add(new Spike(spikeTexture, 5700, 200, 100, true)); // 가시3_b4
-        spikes.add(new Spike(spikeTexture, 5800, 200, 100, true)); // 가시3_b5
-        spikes.add(new Spike(spikeTexture, 5900, 200, 100, true)); // 가시3_b6
-        spikes.add(new Spike(spikeTexture, 6000, 200, 100, true)); // 가시3_b7
-        spikes.add(new Spike(spikeTexture, 6100, 200, 100, true)); // 가시3_b8
 
-        blocks.add(new Block(blockTexture, 4500, 300, 1700, 50)); // 지면4_1
-        blocks.add(new Block(blockTexture, 6350, 0, 800, 1000)); // 우측 벽4
-        jumpPads.add(new JumpPad(jumpPadTexture, 6290, 0, 60, 30)); // 점프패드4_1
-        jumpPads.add(new JumpPad(jumpPadTexture, 6290, 200, 60, 30)); // 점프패드4_2
-        jumpPads.add(new JumpPad(jumpPadTexture, 4300, 350, 60, 30)); // 점프패드4_3
-
-        saws.add(new Saw(sawTexture, 5800, 300, 5800, 550, 200, 500f)); // 톱니4_1
-        saws.add(new Saw(sawTexture, 5650, 300, 5650, 550, 200, 500f)); // 톱니4_2
-
-        saws.add(new Saw(sawTexture, 5350, 550, 5350, 300, 200, 550f)); // 톱니4_3
-        saws.add(new Saw(sawTexture, 5200, 550, 5200, 300, 200, 550f)); // 톱니4_4
-
-        saws.add(new Saw(sawTexture, 4750, 300, 4750, 550, 200, 600f)); // 톱니4_5
-        saws.add(new Saw(sawTexture, 4600, 550, 4600, 300, 200, 600f)); // 톱니4_6
-        saws.add(new Saw(sawTexture, 4450, 300, 4450, 550, 200, 600f)); // 톱니4_7
-
-        flag = new Flag(flagTexture, 4290, 550, 100, 100); // 골인4
+        flag = new Flag(flagTexture, -2850, 450, 100, 100); // 골인3
     }
 
     public void createStage6() {
