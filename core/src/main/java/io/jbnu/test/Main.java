@@ -3,6 +3,8 @@ package io.jbnu.test;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Main extends ApplicationAdapter {
 
+    // 텍스처
     private SpriteBatch batch;
     GameWorld world;
     private Texture playerTexture;
@@ -32,7 +35,20 @@ public class Main extends ApplicationAdapter {
     private BitmapFont clearFont, clearFontBlack;
     private GlyphLayout layout;
 
-    private
+    // 사운드
+    private Sound soundJump;
+    private Sound soundJumpPad;
+    private Sound soundDeath;
+    private Sound soundHardPauseOn;
+    private Sound soundHardPauseOff;
+    private Sound soundSoftPauseOn;
+    private Sound soundSoftPauseOff;
+    private Sound soundStageClear;
+    private Sound soundGameClear;
+
+    private Music earlyStageBGM;
+    private Music lateStageBGM;
+
 
     // 카메라
     private OrthographicCamera camera;
@@ -45,25 +61,26 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
+        // 이미지
         batch = new SpriteBatch();
-        blockTexture = new Texture("block.png");
+        blockTexture = new Texture("textures/block.png");
         blockTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-        playerTexture = new Texture("char.png");
-        spikeTexture = new Texture("spike.png");
-        jumpPadTexture = new Texture("jump_pad.png");
-        sawTexture = new Texture("saw.png");
-        flagTexture = new Texture("flag.png");
+        playerTexture = new Texture("textures/char.png");
+        spikeTexture = new Texture("textures/spike.png");
+        jumpPadTexture = new Texture("textures/jump_pad.png");
+        sawTexture = new Texture("textures/saw.png");
+        flagTexture = new Texture("textures/flag.png");
 
         world = new GameWorld(playerTexture, blockTexture, spikeTexture,
             jumpPadTexture, sawTexture, flagTexture);
 
-        hardPauseTexture = new Texture("hard_pause.png");
-        softPauseTexture = new Texture("soft_pause.png");
+        hardPauseTexture = new Texture("textures/hard_pause.png");
+        softPauseTexture = new Texture("textures/soft_pause.png");
 
         // 글꼴 적용
         FreeTypeFontGenerator generator =
-            new FreeTypeFontGenerator(Gdx.files.internal("Gaegu-Bold.ttf"));
+            new FreeTypeFontGenerator(Gdx.files.internal("font/Gaegu-Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter =
             new FreeTypeFontGenerator.FreeTypeFontParameter();
 
@@ -91,12 +108,27 @@ public class Main extends ApplicationAdapter {
         staticCamera.setToOrtho(false, 1280, 720);
 
         shapeRenderer = new ShapeRenderer();
+
+        // 사운드
+        soundJump = Gdx.audio.newSound(Gdx.files.internal("sounds/jump.ogg"));
+        soundJumpPad = Gdx.audio.newSound(Gdx.files.internal("sounds/jump_pad.ogg"));
+        soundDeath = Gdx.audio.newSound(Gdx.files.internal("sounds/death.ogg"));
+        soundHardPauseOn = Gdx.audio.newSound(Gdx.files.internal("sounds/hard_pause_on.ogg"));
+        soundHardPauseOff = Gdx.audio.newSound(Gdx.files.internal("sounds/hard_pause_off.ogg"));
+        soundSoftPauseOn = Gdx.audio.newSound(Gdx.files.internal("sounds/soft_pause_on.ogg"));
+        soundSoftPauseOff = Gdx.audio.newSound(Gdx.files.internal("sounds/soft_pause_off.ogg"));
+        soundStageClear = Gdx.audio.newSound(Gdx.files.internal("sounds/stage_clear.ogg"));
+        soundGameClear = Gdx.audio.newSound(Gdx.files.internal("sounds/game_clear.ogg"));
+
+        earlyStageBGM = Gdx.audio.newMusic(Gdx.files.internal("musics/early_stage.mp3"));
+        lateStageBGM = Gdx.audio.newMusic(Gdx.files.internal("musics/late_stage.mp3"));;
     }
 
     @Override
     public void render() {
         if(world.getCurrentStage() == 1 || world.getCurrentStage() == 2) {
             ScreenUtils.clear(1f, 1f, 1f, 1f);
+
         }
         else if(world.getCurrentStage() == 3 || world.getCurrentStage() == 4) {
             ScreenUtils.clear(0.75f, 0.75f, 0.75f, 1f);
@@ -104,6 +136,36 @@ public class Main extends ApplicationAdapter {
         else if(world.getCurrentStage() == 5) {
             ScreenUtils.clear(0.5f, 0.5f, 0.5f, 1f);
         }
+
+        Music currentBGM, otherBGM;
+
+        if(world.getCurrentStage() <= 3) {
+            currentBGM = earlyStageBGM;
+        }
+        else {
+            currentBGM = lateStageBGM;
+        }
+        otherBGM = lateStageBGM;
+        otherBGM.stop();
+        currentBGM.setVolume(0.9f);
+        currentBGM.setLooping(true);
+
+        // 하드 퍼즈 중일 때 BGM 멈추기
+        if(world.isHardPause()) {
+            currentBGM.pause();
+        } // 하드 퍼즈를 취소할 때 (현재 BGM이 플레이 중이 아니라면), 재생
+        else if (!currentBGM.isPlaying()) {
+            currentBGM.play();
+        }
+
+        // 소프트 퍼즈 중일 때 BGM 볼륨 줄이기
+        if(world.isSoftPause()) {
+            currentBGM.setVolume(0.3f);
+        }
+        else {
+            currentBGM.setVolume(0.9f);
+        }
+
 
         input();
         logic();
@@ -133,16 +195,58 @@ public class Main extends ApplicationAdapter {
         clearFontBlack.dispose();
 
         shapeRenderer.dispose();
+
+        soundJump.dispose();
+        soundJumpPad.dispose();
+        soundDeath.dispose();
+        soundHardPauseOn.dispose();
+        soundHardPauseOff.dispose();
+        soundSoftPauseOn.dispose();
+        soundSoftPauseOff.dispose();
+        soundStageClear.dispose();
+        soundGameClear.dispose();
+        earlyStageBGM.dispose();
+        lateStageBGM.dispose();
     }
 
     public void input() {
         // ESC로 일시정지 토글
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
                 world.toggleHardPause();
+            if(world.isHardPause()) {
+                soundHardPauseOn.play(0.5f);
+            }
+            else {
+                soundHardPauseOff.play(0.5f);
+            }
         }
 
         if(world.isHardPause()) {
             return;
+        }
+
+        // 점프패드에 닿으면 효과음 재생
+        if(world.isJumpPadTriggered()) {
+            soundJumpPad.play();
+            world.resetJumpPadTriggered();
+        }
+
+        // 플레이어가 죽으면 효과음 재생
+        if(world.isPlayerDeath())  {
+            soundDeath.play();
+            world.resetPlayerDeath();
+        }
+
+        // 스테이지 클리어 시 재생
+        if(world.isFlagTouched()) {
+            soundStageClear.play();
+            world.resetFlagTouched();
+        }
+
+        // 게임 클리어 시 재생
+        if(world.isGameCleared()) {
+            soundGameClear.play();
+            world.resetGameCleared();
         }
 
         // GAME_CLEAR시 ENTER로 리스타트
@@ -170,6 +274,13 @@ public class Main extends ApplicationAdapter {
              || Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_RIGHT)){
             world.toggleSoftPause();
 
+            if(world.getCurrentStage() >= world.SOFT_PAUSE_UNLOCK_STAGE) {
+                if (world.isSoftPause()) {
+                    soundSoftPauseOn.play(0.5f);
+                } else {
+                    soundSoftPauseOff.play(0.5f);
+                }
+            }
         }
 
         if(world.isSoftPause()) {
@@ -177,7 +288,10 @@ public class Main extends ApplicationAdapter {
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            world.onPlayerJump();
+            if(world.getPlayer().isGrounded) {
+                world.onPlayerJump();
+                soundJump.play();
+            }
         }
 
 

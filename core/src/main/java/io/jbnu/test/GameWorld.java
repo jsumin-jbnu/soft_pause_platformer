@@ -7,10 +7,10 @@ import com.badlogic.gdx.math.Rectangle;
 public class GameWorld {
 
     // 디버그용 설정값
-    private final boolean DEBUG = true;
-    private final int DEBUG_STAGE = 5;
-    private final int DEBUG_X = -2900;
-    private final int DEBUG_Y = 500;
+    private final boolean DEBUG = false;
+    private final int DEBUG_STAGE = 4;
+    private final int DEBUG_X = 0;
+    private final int DEBUG_Y = 100;
 
     public boolean isDEBUG() {
         return DEBUG;
@@ -34,7 +34,7 @@ public class GameWorld {
     // 마지막 스테이지
     public static final int FINAL_STAGE = 5;
     // 소프트 퍼즈 해금 스테이지
-    private final int SOFT_PAUSE_UNLOCK_STAGE = 3;
+    public final int SOFT_PAUSE_UNLOCK_STAGE = 3;
     private final gameCharacter player;
     private final Array<Block> blocks;
     private final Array<Spike> spikes;
@@ -44,6 +44,12 @@ public class GameWorld {
     private Flag flag;
 
     private GameState gameState = GameState.PLAYING;
+
+    // 효과음 재생 불리안 변수
+    private boolean jumpPadTriggered = false;
+    private boolean playerDeath = false;
+    private boolean flagTouched = false;
+    private boolean gameCleared = false;
 
     // 게임 전체를 멈추는 일시정지 기능 (true일시 하드 퍼즈)
     private boolean hardPause = false;
@@ -111,6 +117,7 @@ public class GameWorld {
                 if(currentStage >= FINAL_STAGE) {
                     gameState = GameState.GAME_CLEAR;
                     softPause = false;
+                    gameCleared = true;
                 }
 
                 else {
@@ -149,6 +156,16 @@ public class GameWorld {
             if (playerBounds.overlaps(jumpPad.bounds)) {
                 player.velocity.y = JUMP_PAD_VELOCITY;
                 player.isGrounded = false;
+
+                // 패드를 처음 밟은 순간에 신호
+                if (!jumpPad.touched) {
+                    jumpPadTriggered = true;
+                    jumpPad.touched = true;
+                }
+            }
+            // 패드에 벗어나면 사운드가 다시 울릴 수 있게 false
+            else {
+                jumpPad.touched = false;
             }
         }
 
@@ -166,6 +183,7 @@ public class GameWorld {
         // 플래그와 충돌 시 클리어 처리
         if (playerBounds.overlaps(flag.bounds)) {
             gameState = GameState.STAGE_CLEAR;
+            flagTouched = true;
         }
 
         // ★ 소프트 퍼즈
@@ -552,6 +570,7 @@ public class GameWorld {
     }
     public void playerDeath() {
         loadStage(currentStage);
+        playerDeath = true;
         resetPlayerToSpawn();
     }
 
@@ -561,10 +580,20 @@ public class GameWorld {
     }
     public int getCurrentStage() { return currentStage; }
 
+    // (사운드) 점프패드에 닿았는지 확인 getter
+    public boolean isJumpPadTriggered() {return jumpPadTriggered;}
+    // (사운드) 점프패드에 닿았는지 여부 리셋
+    public void resetJumpPadTriggered() {jumpPadTriggered = false;}
+    public boolean isPlayerDeath() {return playerDeath;}
+    public void resetPlayerDeath() {playerDeath = false;}
+    public boolean isFlagTouched() {return flagTouched;}
+    public void resetFlagTouched() {flagTouched = false;}
+    public boolean isGameCleared() {return gameCleared;}
+    public void resetGameCleared() {gameCleared = false;}
+
     public boolean isHardPause() {
         return hardPause;
     }
-
     public boolean isSoftPause() {
         return softPause;
     }

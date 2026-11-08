@@ -12,6 +12,8 @@ public class JumpPad {
     public Sprite sprite;
     public Rectangle bounds;
 
+    public boolean touched = false;
+
 
     public JumpPad(Texture texture, float x, float y, float width, float height) {
         this.position = new Vector2(x, y);
