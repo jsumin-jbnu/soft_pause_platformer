@@ -9,8 +9,8 @@ public class GameWorld {
     // 디버그용 설정값
     private final boolean DEBUG = true;
     private final int DEBUG_STAGE = 5;
-    private final int DEBUG_X = -300;
-    private final int DEBUG_Y = 600;
+    private final int DEBUG_X = -2900;
+    private final int DEBUG_Y = 500;
 
     public boolean isDEBUG() {
         return DEBUG;
@@ -32,7 +32,7 @@ public class GameWorld {
     private final float DEATH_Y = -100;
 
     // 마지막 스테이지
-    public static final int FINAL_STAGE = 7;
+    public static final int FINAL_STAGE = 5;
     // 소프트 퍼즈 해금 스테이지
     private final int SOFT_PAUSE_UNLOCK_STAGE = 3;
     private final gameCharacter player;
@@ -246,12 +246,11 @@ public class GameWorld {
             case 5:
                 createStage5();
                 break;
+                /*
             case 6:
                 createStage6();
                 break;
-            case 7:
-                createStage7();
-                break;
+                */
         }
     }
 
@@ -263,14 +262,14 @@ public class GameWorld {
         blocks.add(new Block(blockTexture, 1600, 0, 400, 300)); // 언덕1_2
 
         blocks.add(new Block(blockTexture, 2200, 0, 400, 300)); // 언덕1_낭떠러지1
-        blocks.add(new Block(blockTexture, 2800, 0, 550, 400)); // 언덕1_낭떠러지2
+        blocks.add(new Block(blockTexture, 2850, 0, 500, 400)); // 언덕1_낭떠러지2
 
         blocks.add(new Block(blockTexture, 3700, 400, 500, 50)); // (플래그 존재) 공중 플랫폼2
-        blocks.add(new Block(blockTexture, 3300, 0, 1000, 100)); // 지면2
-        blocks.add(new Block(blockTexture, 4100, 0, 200, 200)); // 계단2_1
-        blocks.add(new Block(blockTexture, 4300, 0, 200, 300)); // 계단2_2
-        blocks.add(new Block(blockTexture, 4500, 0, 200, 400)); // 계단2_3
-        blocks.add(new Block(blockTexture, 4700, 0, 800, 800)); // 우측 벽2
+        blocks.add(new Block(blockTexture, 3350, 0, 1000, 100)); // 지면2
+        blocks.add(new Block(blockTexture, 4050, 0, 200, 200)); // 계단2_1
+        blocks.add(new Block(blockTexture, 4250, 0, 200, 300)); // 계단2_2
+        blocks.add(new Block(blockTexture, 4450, 0, 200, 400)); // 계단2_3
+        blocks.add(new Block(blockTexture, 4650, 0, 800, 800)); // 우측 벽2
 
         flag = new Flag(flagTexture, 3750, 450, 100, 100); // 골인2
     }
@@ -491,7 +490,7 @@ public class GameWorld {
         blocks.add(new Block(blockTexture, -1750, 0, 300, 350)); // 지면3_2
         blocks.add(new Block(blockTexture, -1750, 550, 300, 400)); // 천장3_2
 
-        saws.add(new Saw(sawTexture, -2050, -100, -2050, 550, 300, 750f)); // 톱니3_3
+        saws.add(new Saw(sawTexture, -2050, -100, -2050, 550, 300, 600f)); // 톱니3_3
         blocks.add(new Block(blockTexture, -2350, 0, 300, 100)); // 지면3_3
         blocks.add(new Block(blockTexture, -2350, 300, 300, 600)); // 천장3_3
         jumpPads.add(new JumpPad(jumpPadTexture, -2225, 250, 60, 30)); // 점프패드3
@@ -507,15 +506,18 @@ public class GameWorld {
         flag = new Flag(flagTexture, -2850, 450, 100, 100); // 골인3
     }
 
+    /*
     public void createStage6() {
         blocks.add(new Block(blockTexture, -100, 0, 200, 100));
         flag = new Flag(flagTexture, 200, 100, 100, 100);
     }
 
+
     public void createStage7() {
         blocks.add(new Block(blockTexture, -100, 0, 200, 100));
         flag = new Flag(flagTexture, 200, 100, 100, 100);
     }
+    */
 
     public Array<Block> getBlocks() {return blocks;}
 

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -27,10 +28,11 @@ public class Main extends ApplicationAdapter {
     private Texture hardPauseTexture;
     private Texture softPauseTexture;
     private Texture jumpPadTexture;
-    private BitmapFont stageFont;
-    private BitmapFont clearFont;
-
+    private BitmapFont stageFont, stageFontBlack;
+    private BitmapFont clearFont, clearFontBlack;
     private GlyphLayout layout;
+
+    private
 
     // 카메라
     private OrthographicCamera camera;
@@ -44,8 +46,10 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        playerTexture = new Texture("char.png");
         blockTexture = new Texture("block.png");
+        blockTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+        playerTexture = new Texture("char.png");
         spikeTexture = new Texture("spike.png");
         jumpPadTexture = new Texture("jump_pad.png");
         sawTexture = new Texture("saw.png");
@@ -57,12 +61,24 @@ public class Main extends ApplicationAdapter {
         hardPauseTexture = new Texture("hard_pause.png");
         softPauseTexture = new Texture("soft_pause.png");
 
+        // 글꼴 적용
+        FreeTypeFontGenerator generator =
+            new FreeTypeFontGenerator(Gdx.files.internal("Gaegu-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter =
+            new FreeTypeFontGenerator.FreeTypeFontParameter();
 
-        clearFont = new BitmapFont();
-        clearFont.getData().setScale(10);
+        parameter.color = Color.WHITE;
+        parameter.size = 40;
+        stageFont = generator.generateFont(parameter);
+        parameter.color = Color.BLACK;
+        stageFontBlack = generator.generateFont(parameter);
 
-        stageFont = new BitmapFont();
-        stageFont.getData().setScale(2);
+        parameter.color = Color.WHITE;
+        parameter.size = 150;
+        clearFont = generator.generateFont(parameter);
+        parameter.color = Color.BLACK;
+        clearFontBlack = generator.generateFont(parameter);
+        generator.dispose();
 
         // 가운데 정렬을 위한 GlyphLayout
         layout = new GlyphLayout();
@@ -79,7 +95,16 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        ScreenUtils.clear(1f, 1f, 1f, 1f);
+        if(world.getCurrentStage() == 1 || world.getCurrentStage() == 2) {
+            ScreenUtils.clear(1f, 1f, 1f, 1f);
+        }
+        else if(world.getCurrentStage() == 3 || world.getCurrentStage() == 4) {
+            ScreenUtils.clear(0.75f, 0.75f, 0.75f, 1f);
+        }
+        else if(world.getCurrentStage() == 5) {
+            ScreenUtils.clear(0.5f, 0.5f, 0.5f, 1f);
+        }
+
         input();
         logic();
         draw();
@@ -104,6 +129,8 @@ public class Main extends ApplicationAdapter {
         jumpPadTexture.dispose();
         stageFont.dispose();
         clearFont.dispose();
+        stageFontBlack.dispose();
+        clearFontBlack.dispose();
 
         shapeRenderer.dispose();
     }
@@ -206,19 +233,33 @@ public class Main extends ApplicationAdapter {
         batch.setProjectionMatrix(staticCamera.combined);
         batch.begin();
         String stageText = "Stage " + world.getCurrentStage() + " / " + GameWorld.FINAL_STAGE;
+
         layout.setText(stageFont, stageText); // 이번 문장 길이 측정
-        float x = 640 - layout.width / 2; // 가운데 정렬 x값
-        stageFont.draw(batch, stageText, x, 700);
+        float stage_x = 640 - layout.width / 2; // 가운데 정렬 x값
+
+        stageFont.draw(batch, stageText, stage_x-2, 698);
+        stageFontBlack.draw(batch, stageText, stage_x, 700);
         batch.end();
+
+
+
 
         if(world.getGameState() == GameState.STAGE_CLEAR) {
             batch.begin();
-            clearFont.draw(batch, "STAGE CLEAR !!", 60, 440);
+            layout.setText(clearFont, "STAGE CLEAR !!");
+            float clear_x = 640 - layout.width / 2;
+
+            clearFont.draw(batch, "STAGE CLEAR !!", clear_x - 5, 435);
+            clearFontBlack.draw(batch, "STAGE CLEAR !!", clear_x, 440);
             batch.end();
         }
         else if(world.getGameState() == GameState.GAME_CLEAR) {
             batch.begin();
-            clearFont.draw(batch, "GAME CLEAR !!!", 80, 440);
+            layout.setText(clearFont, "GAME CLEAR !!!");
+            float clear_x = 640 - layout.width / 2;
+
+            clearFont.draw(batch, "GAME CLEAR !!!", clear_x - 5, 435);
+            clearFontBlack.draw(batch, "GAME CLEAR !!!", clear_x, 440);
             batch.end();
         }
 

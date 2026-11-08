@@ -17,6 +17,10 @@ public class Block {
         this.position = new Vector2(x, y);
 
         this.sprite = new Sprite(texture);
+
+        this.sprite.setRegion(0f, 0f, width / 100f, height / 100f);
+        this.sprite.setRegion(0f, 0f, width / 100f, height / 100f);
+
         this.sprite.setPosition(x, y);
         this.sprite.setSize(width, height);
 

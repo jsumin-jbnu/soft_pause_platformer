@@ -3,6 +3,7 @@ package io.jbnu.test;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -26,7 +27,7 @@ public class Saw {
     // 양수(1) : 시작점 → 끝점 , 음수(-1) : 끝점 → 시작점
     private float direction = 1;
 
-    private final float ratio = 0.7f;
+    private final float ratio = 0.8f;
 
     public Saw(Texture texture, float startX, float startY,
                float endX, float endY, float size, float speed) {
@@ -39,6 +40,7 @@ public class Saw {
         this.sprite = new Sprite(texture);
         this.sprite.setPosition(startX, startY);
         this.sprite.setSize(size, size);
+        sprite.setOriginCenter();
 
         this.hitbox = new Rectangle(startX+size*(1-ratio)/2, startY+size*(1-ratio)/2,
             size*ratio, size*ratio);
@@ -75,6 +77,9 @@ public class Saw {
         this.sprite.setPosition(position.x, position.y);
         this.hitbox.setPosition(position.x+ size*(1-ratio)/2,
             position.y+ size*(1-ratio)/2);
+
+        // 톱니 스프라이트가 speed와 비례해서 회전
+        sprite.rotate(speed * delta * 360f / (MathUtils.PI * size));
     }
 
     public void draw(SpriteBatch batch) {
