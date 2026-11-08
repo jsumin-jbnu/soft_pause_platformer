@@ -35,6 +35,14 @@ public class Main extends ApplicationAdapter {
     private BitmapFont clearFont, clearFontBlack;
     private GlyphLayout layout;
 
+    // 텍스처(표지판)
+    private Texture signMoveJump;
+    private Texture signHardPause;
+    private Texture signFlag;
+    private Texture signJumpPad;
+    private Texture signDanger;
+    private Texture signSoftPause;
+
     // 사운드
     private Sound soundJump;
     private Sound soundJumpPad;
@@ -77,6 +85,14 @@ public class Main extends ApplicationAdapter {
 
         hardPauseTexture = new Texture("textures/hard_pause.png");
         softPauseTexture = new Texture("textures/soft_pause.png");
+
+        signMoveJump = new Texture("textures/sign_MoveJump.png");
+        signHardPause = new Texture("textures/sign_HardPause.png");
+        signFlag = new Texture("textures/sign_Flag.png");
+        signJumpPad = new Texture("textures/sign_JumpPad.png");
+        signDanger = new Texture("textures/sign_Danger.png");
+        signSoftPause = new Texture("textures/sign_SoftPause.png");
+
 
         // 글꼴 적용
         FreeTypeFontGenerator generator =
@@ -141,13 +157,14 @@ public class Main extends ApplicationAdapter {
 
         if(world.getCurrentStage() <= 3) {
             currentBGM = earlyStageBGM;
+            otherBGM = lateStageBGM;
         }
         else {
             currentBGM = lateStageBGM;
+            otherBGM = earlyStageBGM;
         }
-        otherBGM = lateStageBGM;
         otherBGM.stop();
-        currentBGM.setVolume(0.9f);
+        currentBGM.setVolume(0.6f);
         currentBGM.setLooping(true);
 
         // 하드 퍼즈 중일 때 BGM 멈추기
@@ -160,10 +177,10 @@ public class Main extends ApplicationAdapter {
 
         // 소프트 퍼즈 중일 때 BGM 볼륨 줄이기
         if(world.isSoftPause()) {
-            currentBGM.setVolume(0.3f);
+            currentBGM.setVolume(0.2f);
         }
         else {
-            currentBGM.setVolume(0.9f);
+            currentBGM.setVolume(0.6f);
         }
 
 
@@ -189,6 +206,14 @@ public class Main extends ApplicationAdapter {
         hardPauseTexture.dispose();
         softPauseTexture.dispose();
         jumpPadTexture.dispose();
+
+        signMoveJump.dispose();
+        signHardPause.dispose();
+        signFlag.dispose();
+        signJumpPad.dispose();
+        signDanger.dispose();
+        signSoftPause.dispose();
+
         stageFont.dispose();
         clearFont.dispose();
         stageFontBlack.dispose();
@@ -227,7 +252,7 @@ public class Main extends ApplicationAdapter {
 
         // 점프패드에 닿으면 효과음 재생
         if(world.isJumpPadTriggered()) {
-            soundJumpPad.play();
+            soundJumpPad.play(0.5f);
             world.resetJumpPadTriggered();
         }
 
@@ -323,6 +348,22 @@ public class Main extends ApplicationAdapter {
             saw.draw(batch);
         }
 
+        if(world.getCurrentStage() == 1) {
+            batch.draw(signMoveJump, 200, 100, 400, 240);
+            batch.draw(signHardPause, 1600, 300, 400, 240);
+            batch.draw(signFlag, 3400, 100, 400, 240);
+        }
+
+        if(world.getCurrentStage() == 2) {
+            batch.draw(signJumpPad, -350, 100, 400, 240);
+            batch.draw(signDanger, 400, 350, 400, 240);
+        }
+
+        if(world.getCurrentStage() == 3) {
+            batch.draw(signSoftPause, 900, 300, 400, 240);
+        }
+
+
         world.getFlag().draw(batch);
         world.getPlayer().draw(batch);
 
@@ -374,6 +415,20 @@ public class Main extends ApplicationAdapter {
 
             clearFont.draw(batch, "GAME CLEAR !!!", clear_x - 5, 435);
             clearFontBlack.draw(batch, "GAME CLEAR !!!", clear_x, 440);
+
+
+
+            stageFont.getData().setScale(2f);
+            layout.setText(stageFont, "Press ENTER to RESTART");
+            float restart_x = 640 - layout.width / 2;
+            stageFont.draw(batch, "Press ENTER to RESTART", restart_x, 205);
+            stageFont.getData().setScale(1f);
+
+            stageFontBlack.getData().setScale(2f);
+            layout.setText(stageFontBlack, "Press ENTER to RESTART");
+            stageFontBlack.draw(batch, "Press ENTER to RESTART", restart_x - 5, 200);
+            stageFontBlack.getData().setScale(1f);
+
             batch.end();
         }
 

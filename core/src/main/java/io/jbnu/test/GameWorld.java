@@ -8,9 +8,9 @@ public class GameWorld {
 
     // 디버그용 설정값
     private final boolean DEBUG = false;
-    private final int DEBUG_STAGE = 4;
-    private final int DEBUG_X = 0;
-    private final int DEBUG_Y = 100;
+    private final int DEBUG_STAGE = 5;
+    private final int DEBUG_X = -2900;
+    private final int DEBUG_Y = 500;
 
     public boolean isDEBUG() {
         return DEBUG;
@@ -297,7 +297,7 @@ public class GameWorld {
 
         jumpPads.add(new JumpPad(jumpPadTexture, 300, 100, 60, 30)); // 점프패드1
         blocks.add(new Block(blockTexture, 400, 0, 800, 350)); // 언덕1
-        spikes.add(new Spike(spikeTexture, 775, 350, 50, false)); // 가시1
+        spikes.add(new Spike(spikeTexture, 850, 350, 100, false)); // 가시1
 
         blocks.add(new Block(blockTexture, 1200, 0, 800, 200)); // 언덕2
         jumpPads.add(new JumpPad(jumpPadTexture, 1540, 200, 60, 30)); // 점프패드2
