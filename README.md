@@ -31,6 +31,8 @@ LibGDX로 만든 2D 플랫포머 게임입니다.
 - BGM: 「New Train」, 「Silhouette」by MFP【Marron Fields Production】 (DOVA-SYNDROME)
 - SFX: Kenney "Digital Audio" & "Interface Sounds" (CC0) - kenney.nl
 
+(커밋 작성자 sandeulbaram은 jsumin-jbnu의 개인 GitHub 계정입니다.)
+
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
 This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
