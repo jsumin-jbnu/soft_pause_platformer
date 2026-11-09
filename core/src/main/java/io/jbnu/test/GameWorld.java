@@ -8,7 +8,7 @@ public class GameWorld {
 
     // 디버그용 설정값
     private final boolean DEBUG = false;
-    private final int DEBUG_STAGE = 3;
+    private final int DEBUG_STAGE = 1;
     private final int DEBUG_X = 0;
     private final int DEBUG_Y = 100;
 
