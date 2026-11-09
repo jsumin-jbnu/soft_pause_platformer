@@ -149,7 +149,7 @@ public class Main extends ApplicationAdapter {
         else if(world.getCurrentStage() == 3 || world.getCurrentStage() == 4) {
             ScreenUtils.clear(0.75f, 0.75f, 0.75f, 1f);
         }
-        else if(world.getCurrentStage() == 5) {
+        else if(world.getCurrentStage() == 5 || world.getCurrentStage() == 6) {
             ScreenUtils.clear(0.5f, 0.5f, 0.5f, 1f);
         }
 
@@ -360,7 +360,7 @@ public class Main extends ApplicationAdapter {
         }
 
         if(world.getCurrentStage() == 3) {
-            batch.draw(signSoftPause, 900, 300, 400, 240);
+            batch.draw(signSoftPause, 900, 400, 400, 240);
         }
 
 

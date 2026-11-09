@@ -47,6 +47,9 @@ public class Saw {
     }
 
     public void update(float delta) {
+        // 톱니 스프라이트가 speed와 비례해서 회전
+        sprite.rotate(speed * delta * 360f / (MathUtils.PI * size));
+
         // start와 end 두 점 사이의 거리
         float distance = start.dst(end);
 
@@ -78,8 +81,7 @@ public class Saw {
         this.hitbox.setPosition(position.x+ size*(1-ratio)/2,
             position.y+ size*(1-ratio)/2);
 
-        // 톱니 스프라이트가 speed와 비례해서 회전
-        sprite.rotate(speed * delta * 360f / (MathUtils.PI * size));
+
     }
 
     public void draw(SpriteBatch batch) {
