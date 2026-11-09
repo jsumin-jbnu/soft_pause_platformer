@@ -1,4 +1,35 @@
-# midtern_project
+# Soft Pause
+LibGDX로 만든 2D 플랫포머 게임입니다.
+**Soft Pause**는 플레이어를 포함한 세상의 '수직 움직임'과 톱니만 멈추고, 좌우 이동은 그대로 할 수 있는 시간 정지 능력입니다.
+공중에 멈춰 서서 걸어가거나, 점프패드의 힘을 저장했다가 원하는 위치에서 풀어 퍼즐을 풀어 나가세요.
+
+- 총 6개 스테이지 (Stage 3부터 Soft Pause 해금)
+- 주요 요소: Soft Pause / 점프패드 + 운동량 저장 / 움직이는 톱니 정지
+
+## 조작법
+| 키 | 동작 |
+|---|---|
+| ← → | 좌우 이동 |
+| SPACE | 점프 |
+| SHIFT | Soft Pause 켜기 / 끄기 (Stage 3부터) |
+| ESC | 일시정지 / 재개 |
+| ENTER | 게임 클리어 후 처음부터 다시 시작 |
+
+## 실행 방법
+- **jar**: Java 8 이상 설치 후 `java -jar Soft_Pause-1.0.0.jar`
+- **Windows zip**: 압축 해제 후 `Soft_Pause.exe` 실행 (Java 설치 불필요)
+- 실행 파일은 [Releases](../../releases)에서 받을 수 있습니다.
+
+## 시연 영상
+- YouTube: https://youtu.be/1a8a40XVMwI?si=ykNoIp1Sd87TResJ
+
+## Credits
+- Sprites: Kenney "Scribble Platformer" (CC0) – kenney.nl
+  (player, jump pad and signs edited/created based on Kenney assets)
+- Font: Gaegu by JIKJI SOFT (SIL Open Font License 1.1)
+- Signs : board drawn with AI assistance, text added by author
+- BGM: 「New Train」, 「Silhouette」by MFP【Marron Fields Production】 (DOVA-SYNDROME)
+- SFX: Kenney "Digital Audio" & "Interface Sounds" (CC0) - kenney.nl
 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
